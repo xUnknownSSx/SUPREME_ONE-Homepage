@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SU1 - THE SUPREME ONE | Cybersecurity & Hardware Expert</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Pixel & Cyber Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pixel-black: #050505;
+            --pixel-dark: #121212;
+            --pixel-mid: #2a2a2a;
+            --pixel-gray: #777777;
+            --pixel-light-gray: #b0b0b0;
+            --pixel-white: #ffffff;
+            --font-pixel-heading: 'Press Start 2P', monospace;
+            --font-pixel-sub: 'Silkscreen', monospace;
+            --font-pixel-mono: 'Share Tech Mono', monospace;
+            --font-pixel-tall: 'VT323', monospace;
+        }
+
+        body {
+            background-color: var(--pixel-black);
+            color: var(--pixel-white);
+            font-family: var(--font-pixel-mono);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            image-rendering: pixelated;
+        }
+
+        /* Matrix Canvas Background */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        /* CRT Scanline Effect */
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.4) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Main Cyber Frame Box */
+        .retro-frame {
+            border: 4px solid var(--pixel-white);
+            background: rgba(10, 10, 10, 0.92);
+            box-shadow: 
+                0 0 0 2px #000,
+                0 0 0 6px var(--pixel-gray),
+                0 0 25px rgba(255, 255, 255, 0.15);
+            position: relative;
+        }
+
+        /* Retro Window Header Bar */
+        .window-header {
+            background-color: #1a1a1a;
+            border-bottom: 3px solid var(--pixel-white);
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: var(--font-pixel-sub);
+        }
+
+        /* Pixelated 3D Buttons */
+        .btn-pixel-3d {
+            font-family: var(--font-pixel-sub);
+            background-color: var(--pixel-dark);
+            color: var(--pixel-white);
+            border: 3px solid var(--pixel-white);
+            box-shadow: 
+                3px 3px 0px #000000, 
+                6px 6px 0px var(--pixel-gray);
+            padding: 10px 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.08s ease;
+            user-select: none;
+            position: relative;
+        }
+
+        .btn-pixel-3d:hover {
+            background-color: #262626;
+            box-shadow: 
+                4px 4px 0px #000000, 
+                8px 8px 0px var(--pixel-white);
+            transform: translate(-2px, -2px);
+        }
+
+        .btn-pixel-3d:active {
+            box-shadow: 
+                0px 0px 0px #000000, 
+                0px 0px 0px var(--pixel-white);
+            transform: translate(6px, 6px);
+        }
+
+        /* Retro Cards */
+        .pixel-card {
+            background-color: rgba(20, 20, 20, 0.95);
+            border: 2px solid var(--pixel-gray);
+            box-shadow: 4px 4px 0px #000;
+            padding: 20px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .pixel-card:hover {
+            border-color: var(--pixel-white);
+            box-shadow: 
+                6px 6px 0px #000, 
+                0 0 15px rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Pixel Text Glow & Shadows */
+        .pixel-title {
+            font-family: var(--font-pixel-heading);
+            color: var(--pixel-white);
+            text-shadow: 
+                3px 3px 0px #000000,
+                5px 5px 0px var(--pixel-gray),
+                0 0 10px rgba(255, 255, 255, 0.5);
+            letter-spacing: -1px;
+        }
+
+        .pixel-subheading {
+            font-family: var(--font-pixel-sub);
+            letter-spacing: 1px;
+        }
+
+        /* Circuit Corner Decorators */
+        .circuit-node {
+            width: 8px;
+            height: 8px;
+            background-color: var(--pixel-white);
+            border: 1px solid #000;
+            display: inline-block;
+        }
+
+        /* Glitch Animation */
+        @keyframes pixel-flicker {
+            0% { opacity: 0.97; }
+            50% { opacity: 1; }
+            52% { opacity: 0.88; }
+            54% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+
+        .crt-flicker {
+            animation: pixel-flicker 0.15s infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+            border-left: 2px solid var(--pixel-gray);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--pixel-white);
+            border: 2px solid #000;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--pixel-light-gray);
+        }
+    </style>
+</head>
+<body class="crt-flicker min-h-screen flex flex-col items-center justify-center p-3 md:p-8">
+
+    <!-- Matrix Background Rain Canvas -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Scanline CRT Effect -->
+    <div class="scanline-overlay"></div>
+
+    <!-- Main Window Container -->
+    <div class="retro-frame w-full max-w-5xl my-4 z-10 flex flex-col overflow-hidden">
+        
+        <!-- Retro Top Bar -->
+        <div class="window-header">
+            <div class="flex items-center space-x-2">
+                <!-- Key Icon -->
+                <i class="fa-solid fa-key text-white text-sm"></i>
+                <span class="text-xs text-gray-300 tracking-wider hidden sm:inline-block">SYSTEM//SECURE_MAINFRAME</span>
+            </div>
+            
+            <!-- Window Decorative Circuit Lines -->
+            <div class="hidden md:flex items-center space-x-1 opacity-70">
+                <span class="circuit-node"></span>
+                <div class="w-12 h-0.5 bg-white"></div>
+                <span class="circuit-node"></span>
+                <div class="w-8 h-0.5 bg-gray-500"></div>
+            </div>
+
+            <!-- Window Control Buttons -->
+            <div class="flex items-center space-x-2 text-xs font-bold">
+                <button class="px-2 py-0.5 border border-gray-400 bg-black hover:bg-white hover:text-black transition" onclick="playClickSound()">_</button>
+                <button class="px-2 py-0.5 border border-gray-400 bg-black hover:bg-white hover:text-black transition" onclick="playClickSound()">□</button>
+                <button class="px-2 py-0.5 border border-gray-400 bg-black hover:bg-white hover:text-black transition" onclick="playClickSound()">✕</button>
+            </div>
+        </div>
+
+        <!-- Content Body Area -->
+        <div class="p-6 md:p-10 relative flex-grow flex flex-col">
+            
+            <!-- Background Cyber Dragon Vector Artwork Layer -->
+            <div class="absolute inset-0 pointer-events-none opacity-15 flex items-center justify-center overflow-hidden">
+                <svg class="w-full h-full max-w-4xl text-white fill-current" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Wireframe Coiled Cyber Dragon Symbol -->
+                    <g stroke="currentColor" stroke-width="1.5" fill="none">
+                        <!-- Infinity Loops -->
+                        <path d="M 200,200 C 100,100 100,300 200,200 C 300,100 500,100 600,200 C 700,300 700,100 600,200 C 500,300 300,300 200,200 Z" stroke-dasharray="4 4" />
+                        <path d="M 200,200 C 120,120 120,280 200,200 C 280,120 480,120 600,200 C 680,280 680,120 600,200 C 480,280 280,280 200,200 Z" />
+                        <!-- Circuit Traces -->
+                        <path d="M 50,50 L 150,50 L 200,100 L 400,100 M 750,50 L 650,50 L 600,100 L 400,100" />
+                        <path d="M 50,350 L 150,350 L 200,300 L 600,300 L 650,350 L 750,350" />
+                        <circle cx="150" cy="50" r="4" fill="currentColor" />
+                        <circle cx="650" cy="50" r="4" fill="currentColor" />
+                        <circle cx="150" cy="350" r="4" fill="currentColor" />
+                        <circle cx="650" cy="350" r="4" fill="currentColor" />
+                        <!-- Dragon Head Outline Pixelated -->
+                        <path d="M 380,140 L 420,140 L 440,160 L 460,150 L 450,180 L 410,190 L 390,170 Z" />
+                        <polygon points="410,150 420,145 425,155" fill="currentColor"/>
+                        <!-- Microchip Nodes -->
+                        <rect x="380" y="220" width="40" height="30" stroke="currentColor" fill="#111" />
+                        <line x1="390" y1="220" x2="390" y2="210" />
+                        <line x1="400" y1="220" x2="400" y2="210" />
+                        <line x1="410" y1="220" x2="410" y2="210" />
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Hero Section -->
+            <section class="text-center my-6 relative z-10">
+                <h1 class="pixel-title text-2xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 leading-tight">
+                    SU1 - THE SUPREME ONE
+                </h1>
+                <p class="pixel-subheading text-xs sm:text-sm md:text-base text-gray-300 border-y-2 border-gray-700 py-2 inline-block px-4">
+                    [ HARDWARE ARCHITECT &amp; CYBERSECURITY EXPERT ]
+                </p>
+            </section>
+
+            <!-- System Briefing Section -->
+            <section class="my-6 relative z-10">
+                <div class="pixel-card">
+                    <div class="flex items-center justify-between border-b border-gray-700 pb-2 mb-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 bg-white inline-block"></span>
+                            <h2 class="pixel-subheading text-sm md:text-base text-white">// SYSTEM_CAPABILITIES</h2>
+                        </div>
+                        <span class="text-xs text-gray-400 font-mono">STATUS: ACTIVE</span>
+                    </div>
+                    <p class="text-sm md:text-base leading-relaxed text-gray-300 font-mono mb-3">
+                        Operating at the intersection of low-level software exploitation and custom hardware engineering. I possess comprehensive, deep knowledge of both <span class="text-white font-bold bg-gray-800 px-1 border border-gray-600">Windows</span> and <span class="text-white font-bold bg-gray-800 px-1 border border-gray-600">Linux</span> kernel architectures.
+                    </p>
+                    <p class="text-sm md:text-base leading-relaxed text-gray-300 font-mono">
+                        Capable of dissecting, auditing, and exploiting Windows vulnerabilities to my exact requirements—ranging from privilege escalation vectors to custom payload delivery—while weaponizing offensive tools on Kali Linux and crafting bespoke hardware attack vectors.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Tech Stack & Languages Section -->
+            <section class="my-6 relative z-10">
+                <h3 class="pixel-subheading text-xs md:text-sm text-gray-400 mb-4 tracking-widest text-center">
+                    [ // PROGRAMMING_LANGUAGES &amp; SKILLS ]
+                </h3>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
+                    
+                    <!-- Language: Lua -->
+                    <button class="btn-pixel-3d py-3 text-xs md:text-sm" onclick="playClickSound()" title="Lua Language">
+                        <svg class="w-4 h-4 mr-2 fill-current inline-block" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 0C5.373 0 0 5.373 0 12c0 6.628 5.373 12 12 12s12-5.372 12-12C24 5.373 18.627 0 12 0zm0 21.6c-5.302 0-9.6-4.298-9.6-9.6S6.698 2.4 12 2.4s9.6 4.298 9.6 9.6-4.298 9.6-9.6 9.6zm4.8-13.2a2.4 2.4 0 100-4.8 2.4 2.4 0 000 4.8zM7.2 14.4a2.4 2.4 0 100-4.8 2.4 2.4 0 000 4.8zm4.8 4.8a2.4 2.4 0 100-4.8 2.4 2.4 0 000 4.8z"/>
+                        </svg>
+                        LUA
+                    </button>
+
+                    <!-- Language: C++ -->
+                    <button class="btn-pixel-3d py-3 text-xs md:text-sm" onclick="playClickSound()" title="C++ Programming">
+                        <span class="font-bold mr-1 text-sm md:text-base">C++</span>
+                    </button>
+
+                    <!-- Language: Python -->
+                    <button class="btn-pixel-3d py-3 text-xs md:text-sm" onclick="playClickSound()" title="Python">
+                        <i class="fa-brands fa-python mr-2 text-base"></i>
+                        PYTHON
+                    </button>
+
+                    <!-- Language: Java -->
+                    <button class="btn-pixel-3d py-3 text-xs md:text-sm" onclick="playClickSound()" title="Java">
+                        <i class="fa-brands fa-java mr-2 text-base"></i>
+                        JAVA
+                    </button>
+
+                </div>
+            </section>
+
+            <!-- Classified Projects Section -->
+            <section class="my-6 relative z-10">
+                <h3 class="pixel-subheading text-xs md:text-sm text-gray-400 mb-6 tracking-widest text-center">
+                    [ // HARDWARE &amp; SOFTWARE PROJECTS ]
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Project 1: WiFi Nugget -->
+                    <div class="pixel-card flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3 border-b border-gray-800 pb-2">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-wifi text-lg text-white"></i>
+                                    <h4 class="pixel-subheading text-sm md:text-base text-white">WiFi Nugget</h4>
+                                </div>
+                                <span class="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 border border-gray-600">HARDWARE</span>
+                            </div>
+                            <p class="text-xs md:text-sm text-gray-300 leading-relaxed font-mono mb-4">
+                                Custom tactile network defense device designed to detect and immediately warn users of active 802.11 deauthentication attacks and wireless rogue access points in real-time.
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-800">
+                            <span>TYPE: DEAUTH WARNER</span>
+                            <span>LANG: C++ / ESP</span>
+                        </div>
+                    </div>
+
+                    <!-- Project 2: ESP32 Hacking Firmware -->
+                    <div class="pixel-card flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3 border-b border-gray-800 pb-2">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-microchip text-lg text-white"></i>
+                                    <h4 class="pixel-subheading text-sm md:text-base text-white">ESP32 Firmware</h4>
+                                </div>
+                                <span class="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 border border-gray-600">OFFENSIVE</span>
+                            </div>
+                            <p class="text-xs md:text-sm text-gray-300 leading-relaxed font-mono mb-4">
+                                Bespoke offensive micro-firmware for ESP32 microcontrollers. Empowers hardware with handheld wireless auditing, captive portal deployment, packet crafting, and signal analysis.
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-800">
+                            <span>TYPE: EXPLOIT KIT</span>
+                            <span>ARCH: ESP32 SoC</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Repositories Call-To-Action -->
+            <section class="mt-8 text-center relative z-10">
+                <a href="https://github.com/xUnknownSSx" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="btn-pixel-3d py-4 px-8 text-sm md:text-base tracking-wider" 
+                   onclick="playClickSound()"
+                   aria-label="Access GitHub Repositories">
+                    <i class="fa-brands fa-github text-xl mr-3"></i>
+                    [ ACCESS REPOSITORIES ]
+                </a>
+            </section>
+
+        </div>
+
+        <!-- Retro Bottom HUD Bar with KALI Emblem -->
+        <div class="window-header justify-between py-2 border-t-2 border-white border-b-0 bg-black">
+            <div class="flex items-center space-x-3 text-xs text-gray-400">
+                <span class="circuit-node"></span>
+                <span class="text-white">∞</span>
+                <span class="hidden sm:inline">CIRCUIT_OK</span>
+            </div>
+
+            <!-- KALI Central Emblem -->
+            <div class="px-4 py-1 border-2 border-white bg-black font-bold tracking-widest text-xs md:text-sm text-white flex items-center space-x-2">
+                <span>[</span>
+                <span class="pixel-subheading">KALI</span>
+                <span>]</span>
+            </div>
+
+            <div class="flex items-center space-x-3 text-xs text-gray-400">
+                <span class="hidden sm:inline">SU1_CORE_v2.6</span>
+                <i class="fa-solid fa-microchip text-white"></i>
+                <span class="circuit-node"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Copyright -->
+    <footer class="text-center text-xs text-gray-500 font-mono mt-2 z-10">
+        SUPREME_ONE // ALL RIGHTS RESERVED 2026 // END_TRANSMISSION
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            /* Matrix Rain Canvas Effect */
+            const canvas = document.getElementById('matrix-canvas');
+            const ctx = canvas.getContext('2d');
+
+            let width, height;
+            let columns = [];
+            const fontSize = 16;
+            
+            // Retro monochrome characters (Matrix + Hex + Symbols)
+            const chars = '0123456789ABCDEFSU1KALI_$%#*+=-<>~';
+
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+
+                const columnCount = Math.floor(width / fontSize) + 1;
+                columns = [];
+                for (let i = 0; i < columnCount; i++) {
+                    columns[i] = Math.random() * (height / fontSize);
+                }
+            }
+
+            function drawMatrix() {
+                // Fading trail effect for pixel aesthetic
+                ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
+                ctx.fillRect(0, 0, width, height);
+
+                ctx.font = fontSize + 'px "Share Tech Mono", monospace';
+
+                for (let i = 0; i < columns.length; i++) {
+                    const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                    
+                    // High contrast monochrome colors
+                    if (Math.random() > 0.88) {
+                        ctx.fillStyle = '#FFFFFF'; // Bright highlight char
+                    } else if (Math.random() > 0.5) {
+                        ctx.fillStyle = '#AAAAAA'; // Mid silver
+                    } else {
+                        ctx.fillStyle = '#555555'; // Dark silver
+                    }
+
+                    const x = i * fontSize;
+                    const y = columns[i] * fontSize;
+
+                    ctx.fillText(text, x, y);
+
+                    if (y > height && Math.random() > 0.96) {
+                        columns[i] = 0;
+                    }
+                    columns[i]++;
+                }
+            }
+
+            resizeCanvas();
+            setInterval(drawMatrix, 45);
+            window.addEventListener('resize', resizeCanvas);
+        });
+
+        /* 8-bit Web Audio Synthesizer for Retro Clicks */
+        function playClickSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'square'; // Retro 8-bit square wave
+                osc.frequency.setValueAtTime(440, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.05);
+                
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.05);
+            } catch (e) {
+                // Audio Context fallback silent
+            }
+        }
+    </script>
+</body>
+</html>
